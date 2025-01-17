@@ -1,12 +1,11 @@
 document.getElementById("addProduct").addEventListener("click", () => {
   const productNameInput = document.getElementById("productName");
-  const productCodeInput = document.getElementById("productCode");
   const quantityInput = document.getElementById("quantity");
   const unitInput = document.getElementById("unit");
   const conversionValueInput = document.getElementById("conversionValue");
 
   let productName = productNameInput.value.trim();
-  let productCode = productCodeInput.value.trim() || "0000";
+  let productCode = productName ? "0000" : "";
   let quantity = parseFloat(quantityInput.value);
   let unit = unitInput.value.trim();
   let conversionValue = parseFloat(conversionValueInput.value);
@@ -22,7 +21,6 @@ document.getElementById("addProduct").addEventListener("click", () => {
 
   newRow.innerHTML = `
     <td>${productName}</td>
-    <td>${productCode}</td>
     <td>${quantity}</td>
     <td>${unit}</td>
     <td>${convertedValue} ${unit}</td>
@@ -31,7 +29,6 @@ document.getElementById("addProduct").addEventListener("click", () => {
   tableBody.appendChild(newRow);
 
   productNameInput.value = "";
-  productCodeInput.value = "";
   quantityInput.value = "";
   unitInput.value = "";
   conversionValueInput.value = "";
@@ -49,9 +46,9 @@ document.getElementById("generateWhatsApp").addEventListener("click", () => {
   rows.forEach(row => {
     const cells = row.querySelectorAll("td");
     message += `- **${cells[0].textContent}**\n`;
-    message += `  Código: ${cells[1].textContent}\n`;
-    message += `  🔄Quantidade: ${cells[2].textContent} (${cells[3].textContent})\n`;
-    message += `  **Valor Convertido**: ${cells[4].textContent}\n\n`;
+    message += `  Quantidade: ${cells[1].textContent}\n`;
+    message += `  Unidade: ${cells[2].textContent}\n`;
+    message += `  **Valor Convertido**: ${cells[3].textContent}\n\n`;
   });
 
   const encodedMessage = encodeURIComponent(message);
