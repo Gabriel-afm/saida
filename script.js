@@ -1,53 +1,60 @@
-document.getElementById('addProduct').addEventListener('click', () => {
-  const productSelect = document.getElementById('product');
-  const quantityInput = document.getElementById('quantity');
-  const unitInput = document.getElementById('unit');
+document.getElementById("addProduct").addEventListener("click", () => {
+  const productNameInput = document.getElementById("productName");
+  const productCodeInput = document.getElementById("productCode");
+  const quantityInput = document.getElementById("quantity");
+  const unitInput = document.getElementById("unit");
+  const conversionValueInput = document.getElementById("conversionValue");
 
-  const productText = productSelect.options[productSelect.selectedIndex]?.text || '';
-  const quantity = parseInt(quantityInput.value, 10);
-  const unit = unitInput.value;
+  let productName = productNameInput.value.trim();
+  let productCode = productCodeInput.value.trim() || "0000";
+  let quantity = parseFloat(quantityInput.value);
+  let unit = unitInput.value.trim();
+  let conversionValue = parseFloat(conversionValueInput.value);
+  let convertedValue = quantity * conversionValue;
 
-  if (!productText || !quantity || !unit) {
-    alert('Preencha todos os campos.');
+  if (!productName || isNaN(quantity) || isNaN(conversionValue) || !unit) {
+    alert("Preencha todos os campos corretamente!");
     return;
   }
 
-  const unitValue = parseFloat(unit.match(/\d+/)[0]);
-  const unitType = unit.replace(unitValue, '').trim();
-  const convertedValue = quantity * unitValue;
+  const tableBody = document.querySelector("#productTable tbody");
+  const newRow = document.createElement("tr");
 
-  const productList = document.getElementById('productList');
-  const row = document.createElement('tr');
-
-  row.innerHTML = `
-    <td>${productText}</td>
+  newRow.innerHTML = `
+    <td>${productName}</td>
+    <td>${productCode}</td>
     <td>${quantity}</td>
     <td>${unit}</td>
-    <td>${convertedValue} ${unitType}</td>
+    <td>${convertedValue} ${unit}</td>
   `;
 
-  productList.appendChild(row);
+  tableBody.appendChild(newRow);
 
-  productSelect.value = '';
-  quantityInput.value = '';
-  unitInput.value = '';
+  productNameInput.value = "";
+  productCodeInput.value = "";
+  quantityInput.value = "";
+  unitInput.value = "";
+  conversionValueInput.value = "";
 });
 
-document.getElementById('sendToWhatsApp').addEventListener('click', () => {
-  const rows = document.querySelectorAll('#productList tr');
-  if (!rows.length) {
-    alert('Adicione pelo menos um produto.');
+document.getElementById("generateWhatsApp").addEventListener("click", () => {
+  const rows = document.querySelectorAll("#productTable tbody tr");
+  if (rows.length === 0) {
+    alert("Adicione produtos à lista antes de gerar a mensagem!");
     return;
   }
 
-  let message = '*Produtos Adicionados:*\n\n';
+  let message = "Lista de Produtos:\n\n";
 
   rows.forEach(row => {
-    const cells = row.querySelectorAll('td');
-    const [product, quantity, unit, converted] = Array.from(cells).map(cell => cell.textContent);
-    message += `- *${product}*\n  Código: ${product.split(' - ')[0]}\n\n 🔄 Quantidade: ${quantity} (${unit})\n  *Valor Convertido*: ${converted}\n\n`;
+    const cells = row.querySelectorAll("td");
+    message += `- **${cells[0].textContent}**\n`;
+    message += `  Código: ${cells[1].textContent}\n`;
+    message += `  🔄Quantidade: ${cells[2].textContent} (${cells[3].textContent})\n`;
+    message += `  **Valor Convertido**: ${cells[4].textContent}\n\n`;
   });
 
   const encodedMessage = encodeURIComponent(message);
-  window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+  const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+  window.open(whatsappUrl, "_blank");
 });
