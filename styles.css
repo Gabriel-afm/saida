@@ -1,75 +1,60 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #1a1a1a;
-  color: white;
-  margin: 0;
-  padding: 0;
-}
+document.getElementById("addProduct").addEventListener("click", () => {
+  const productNameInput = document.getElementById("productName");
+  const productCodeInput = document.getElementById("productCode");
+  const quantityInput = document.getElementById("quantity");
+  const unitInput = document.getElementById("unit");
+  const conversionValueInput = document.getElementById("conversionValue");
 
-.container {
-  max-width: 800px;
-  margin: 50px auto;
-  background-color: #333;
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
+  let productName = productNameInput.value.trim();
+  let productCode = productCodeInput.value.trim() || "0000";
+  let quantity = parseFloat(quantityInput.value);
+  let unit = unitInput.value.trim();
+  let conversionValue = parseFloat(conversionValueInput.value);
+  let convertedValue = quantity * conversionValue;
 
-h1, h2 {
-  text-align: center;
-  color: #00f;
-}
+  if (!productName || isNaN(quantity) || isNaN(conversionValue) || !unit) {
+    alert("Preencha todos os campos corretamente!");
+    return;
+  }
 
-.form-group {
-  margin-bottom: 15px;
-}
+  const tableBody = document.querySelector("#productTable tbody");
+  const newRow = document.createElement("tr");
 
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
+  newRow.innerHTML = `
+    <td>${productName}</td>
+    <td>${productCode}</td>
+    <td>${quantity}</td>
+    <td>${unit}</td>
+    <td>${convertedValue} ${unit}</td>
+  `;
 
-input, button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #555;
-  color: white;
-}
+  tableBody.appendChild(newRow);
 
-button {
-  background-color: #0066cc;
-  cursor: pointer;
-}
+  productNameInput.value = "";
+  productCodeInput.value = "";
+  quantityInput.value = "";
+  unitInput.value = "";
+  conversionValueInput.value = "";
+});
 
-button:hover {
-  background-color: #004c99;
-}
+document.getElementById("generateWhatsApp").addEventListener("click", () => {
+  const rows = document.querySelectorAll("#productTable tbody tr");
+  if (rows.length === 0) {
+    alert("Adicione produtos à lista antes de gerar a mensagem!");
+    return;
+  }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
+  let message = "Lista de Produtos:\n\n";
 
-th, td {
-  border: 1px solid #ccc;
-  padding: 10px;
-  text-align: center;
-}
+  rows.forEach(row => {
+    const cells = row.querySelectorAll("td");
+    message += `- **${cells[0].textContent}**\n`;
+    message += `  Código: ${cells[1].textContent}\n`;
+    message += `  🔄Quantidade: ${cells[2].textContent} (${cells[3].textContent})\n`;
+    message += `  **Valor Convertido**: ${cells[4].textContent}\n\n`;
+  });
 
-th {
-  background-color: #444;
-}
-
-td {
-  background-color: #555;
-}
-
-button#generateWhatsApp {
-  margin-top: 20px;
-}
+  const encodedMessage = encodeURIComponent(message);
+  const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+  window.open(whatsappUrl, "_blank");
+});
