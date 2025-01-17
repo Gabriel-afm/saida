@@ -9,45 +9,48 @@
 <body>
   <div class="container">
     <h1>Gerador de Saída de Produtos</h1>
-    <form id="productForm">
-      <div class="input-group">
-        <label for="product">Produto:</label>
-        <select id="product" required>
-          <option value="" disabled selected>Selecione um produto</option>
-          <option value="309146 - Damasco Desidratado">309146 - Damasco Desidratado</option>
-          <option value="310132 - Pimenta Biquinho em Conserva">310132 - Pimenta Biquinho em Conserva</option>
-          <option value="301021 - Milho para Canjica Amarelo">301021 - Milho para Canjica Amarelo</option>
-        </select>
-      </div>
-      <div class="input-group">
-        <label for="quantity">Quantidade:</label>
-        <input type="number" id="quantity" required>
-      </div>
-      <div class="input-group">
-        <label for="unit">Unidade (ex: 10kg):</label>
-        <input type="text" id="unit" placeholder="Exemplo: 10kg" required>
-      </div>
-      <button type="button" id="addProduct">Adicionar Produto</button>
-    </form>
-
-    <div id="productTable">
-      <h2>Produtos Adicionados</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Produto</th>
-            <th>Quantidade</th>
-            <th>Unidade</th>
-            <th>Valor Convertido</th>
-          </tr>
-        </thead>
-        <tbody id="productList"></tbody>
-      </table>
+    <div class="form-group">
+      <label for="productName">Produto:</label>
+      <input list="productList" id="productName" placeholder="Selecione ou digite um produto">
+      <datalist id="productList">
+        <option value="312988 - CURCUMA EM PO"></option>
+        <option value="310085 - CURRY DA INDIA"></option>
+        <option value="309146 - DAMASCO DESIDRATADO"></option>
+        <!-- Adicione mais produtos aqui -->
+      </datalist>
     </div>
-
-    <button id="sendToWhatsApp">Enviar para WhatsApp</button>
+    <div class="form-group">
+      <label for="productCode">Código:</label>
+      <input type="text" id="productCode" placeholder="Código do produto (automático para novos)">
+    </div>
+    <div class="form-group">
+      <label for="quantity">Quantidade:</label>
+      <input type="number" id="quantity" placeholder="Quantidade">
+    </div>
+    <div class="form-group">
+      <label for="unit">Unidade:</label>
+      <input type="text" id="unit" placeholder="Unidade (ex.: kg, unidades)">
+    </div>
+    <div class="form-group">
+      <label for="conversionValue">Valor por Unidade:</label>
+      <input type="number" id="conversionValue" placeholder="Valor por unidade">
+    </div>
+    <button id="addProduct">Adicionar Produto</button>
+    <h2>Lista de Produtos</h2>
+    <table id="productTable">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Código</th>
+          <th>Quantidade</th>
+          <th>Unidade</th>
+          <th>Valor Convertido</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button id="generateWhatsApp">Gerar para WhatsApp</button>
   </div>
-
   <script src="script.js"></script>
 </body>
 </html>
