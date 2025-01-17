@@ -1,35 +1,53 @@
-document.getElementById('productForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+document.getElementById('addProduct').addEventListener('click', () => {
+  const productSelect = document.getElementById('product');
+  const quantityInput = document.getElementById('quantity');
+  const unitInput = document.getElementById('unit');
 
-    const productName = document.getElementById('productName').value.trim();
-    const productQuantity = document.getElementById('productQuantity').value.trim();
+  const productText = productSelect.options[productSelect.selectedIndex]?.text || '';
+  const quantity = parseInt(quantityInput.value, 10);
+  const unit = unitInput.value;
 
-    if (productName && productQuantity) {
-        const productList = document.getElementById('productList');
-        const li = document.createElement('li');
-        li.textContent = `${productName} - Quantidade: ${productQuantity}`;
-        productList.appendChild(li);
+  if (!productText || !quantity || !unit) {
+    alert('Preencha todos os campos.');
+    return;
+  }
 
-        document.getElementById('productName').value = '';
-        document.getElementById('productQuantity').value = '';
-    }
+  const unitValue = parseFloat(unit.match(/\d+/)[0]);
+  const unitType = unit.replace(unitValue, '').trim();
+  const convertedValue = quantity * unitValue;
+
+  const productList = document.getElementById('productList');
+  const row = document.createElement('tr');
+
+  row.innerHTML = `
+    <td>${productText}</td>
+    <td>${quantity}</td>
+    <td>${unit}</td>
+    <td>${convertedValue} ${unitType}</td>
+  `;
+
+  productList.appendChild(row);
+
+  productSelect.value = '';
+  quantityInput.value = '';
+  unitInput.value = '';
 });
 
-document.getElementById('sendToWhatsApp').addEventListener('click', function() {
-    const productListItems = document.querySelectorAll('#productList li');
-    if (productListItems.length === 0) {
-        alert('Adicione produtos antes de enviar!');
-        return;
-    }
+document.getElementById('sendToWhatsApp').addEventListener('click', () => {
+  const rows = document.querySelectorAll('#productList tr');
+  if (!rows.length) {
+    alert('Adicione pelo menos um produto.');
+    return;
+  }
 
-    let message = 'Lista de produtos para saída:\n\n';
-    productListItems.forEach((item, index) => {
-        message += `${index + 1}. ${item.textContent}\n`;
-    });
+  let message = '*Produtos Adicionados:*\n\n';
 
-    const whatsappNumber = '5585999999999'; // Substitua pelo número do WhatsApp
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+  rows.forEach(row => {
+    const cells = row.querySelectorAll('td');
+    const [product, quantity, unit, converted] = Array.from(cells).map(cell => cell.textContent);
+    message += `- *${product}*\n  Código: ${product.split(' - ')[0]}\n\n 🔄 Quantidade: ${quantity} (${unit})\n  *Valor Convertido*: ${converted}\n\n`;
+  });
 
-    window.open(whatsappURL, '_blank');
+  const encodedMessage = encodeURIComponent(message);
+  window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
 });
